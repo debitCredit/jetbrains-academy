@@ -3,6 +3,9 @@
 
 www.hyperskill.org/tracks/2#projects
 
+### Easy
+* Loan Calculator
+
 ### Medium
 * Easy Rider Bus Company
 * Rock-Paper-Scissors
