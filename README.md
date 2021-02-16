@@ -17,6 +17,7 @@ My profile page: https://hyperskill.org/profile/77345863
 
 ### Easy
 * Loan Calculator
+* Tic-Tac-Toe
 
 
 
