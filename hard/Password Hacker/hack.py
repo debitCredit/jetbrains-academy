@@ -14,6 +14,7 @@ def permutations(password_):
     return list(map(''.join, product(*zip(password_.lower(), password_.upper()))))
 
 
+# "Wrong password" is received back when login is correct
 def find_login(sock):
     with open(r'C:\dev\python\logins.txt', 'r', encoding='utf-8') as in_file:
         for login in in_file:
@@ -31,6 +32,7 @@ with socket.socket() as sock:
     times = {}
     sock.connect((ip, port))
     login_perm = find_login(sock)
+    # Login correct, moving to finding the password
     if login_perm is not None:
         for x in range(10):
             for c in chars:
