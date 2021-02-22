@@ -17,7 +17,7 @@ Three levels of difficulty implemented for the AI player:
 
 
 
-##Example
+## Example
 Usage:
 
 start [user, easy, medium, hard] [user, easy, medium, hard]
