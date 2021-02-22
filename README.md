@@ -9,6 +9,7 @@ My profile page: https://hyperskill.org/profile/77345863
 * Text Generator
 * Password Hacker
 * To-Do List
+* Unbeatable Tic-Tac-Toe (minimax)
 
 ### Medium
 * Easy Rider Bus Company
