@@ -63,6 +63,7 @@ PROMPT_MAIN = "1. Add matrices\n" \
               "3. Multiply matrices\n" \
               "4. Transpose matrix\n" \
               "5. Calculate a determinant\n" \
+              "6. Inverse matrix\n" \
               "0. Exit\n"
 
 PROMPT_TRANSPOSE = "1. Main diagonal\n" \
@@ -91,6 +92,7 @@ def print_prompt():
                     '3': mult_matrices,
                     '4': transpose,
                     '5': determinant,
+                    '6': inverse,
                     '0': shutdown}
     func_choices.get(choice, incorrect_input)()
 
@@ -149,11 +151,47 @@ def calc_determinant(matrix):
         return matrix[0][0]
     total = 0
     for column, element in enumerate(matrix[0]):
-        # Exclude first row and current column.
         k = [x[:column] + x[column + 1:] for x in matrix[1:]]
         s = 1 if column % 2 == 0 else -1
         total += s * element * calc_determinant(k)
     return total
+
+
+def calc_inverse(A, tol=None):
+
+    n = len(A)
+    AM = A.copy()
+    i_matrix = identity_matrix(n)
+    inverse_matrix = i_matrix.copy()
+
+    indices = list(range(n))
+    for fd in range(n):
+        focus_diagonal_scaler = 1.0 / AM[fd][fd]
+        for j in range(n):
+            AM[fd][j] *= focus_diagonal_scaler
+            inverse_matrix[fd][j] *= focus_diagonal_scaler
+        for i in indices[0:fd] + indices[fd + 1:]:
+            current_row_scaler = AM[i][fd]
+            for j in range(n):
+                AM[i][j] = AM[i][j] - current_row_scaler * AM[fd][j]
+                inverse_matrix[i][j] = inverse_matrix[i][j] - current_row_scaler * inverse_matrix[fd][j]
+    return inverse_matrix
+
+
+def identity_matrix(n):
+    I = zeros_matrix(n, n)
+    for i in range(n):
+        I[i][i] = 1.0
+    return I
+
+
+def zeros_matrix(rows, cols):
+    matrix = []
+    while len(matrix) < rows:
+        matrix.append([])
+        while len(matrix[-1]) < cols:
+            matrix[-1].append(0.0)
+    return matrix
 
 
 def shutdown():
@@ -170,6 +208,18 @@ def determinant():
     print("The result is:")
     print("{:.2f}".format(calc_determinant(matrix)))
     print("")
+
+
+def inverse():
+    matrix = init_matrix()
+    det = calc_determinant(matrix)
+    if det == 0:
+        print("This matrix doesn't have an inverse.")
+        print("")
+        return
+    else:
+        print(Matrix(calc_inverse(matrix)))
+        print("")
 
 
 if __name__ == '__main__':
