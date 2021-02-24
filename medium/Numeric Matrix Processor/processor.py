@@ -62,6 +62,7 @@ PROMPT_MAIN = "1. Add matrices\n" \
               "2. Multiply matrix by a constant\n" \
               "3. Multiply matrices\n" \
               "4. Transpose matrix\n" \
+              "5. Calculate a determinant\n" \
               "0. Exit\n"
 
 PROMPT_TRANSPOSE = "1. Main diagonal\n" \
@@ -85,7 +86,12 @@ def main():
 def print_prompt():
     print(PROMPT_MAIN)
     choice = input("Your choice: ")
-    func_choices = {'1': add_matrices, '2': mult_matrix_constant, '3': mult_matrices, '4': transpose, '0': shutdown}
+    func_choices = {'1': add_matrices,
+                    '2': mult_matrix_constant,
+                    '3': mult_matrices,
+                    '4': transpose,
+                    '5': determinant,
+                    '0': shutdown}
     func_choices.get(choice, incorrect_input)()
 
 
@@ -138,6 +144,18 @@ def transpose_exec(func):
     print("")
 
 
+def calc_determinant(matrix):
+    if len(matrix) == 1:
+        return matrix[0][0]
+    total = 0
+    for column, element in enumerate(matrix[0]):
+        # Exclude first row and current column.
+        k = [x[:column] + x[column + 1:] for x in matrix[1:]]
+        s = 1 if column % 2 == 0 else -1
+        total += s * element * calc_determinant(k)
+    return total
+
+
 def shutdown():
     exit(0)
 
@@ -145,6 +163,13 @@ def shutdown():
 def incorrect_input():
     print("Incorrect input, try again\n")
     print_prompt()
+
+
+def determinant():
+    matrix = init_matrix()
+    print("The result is:")
+    print("{:.2f}".format(calc_determinant(matrix)))
+    print("")
 
 
 if __name__ == '__main__':
