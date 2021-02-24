@@ -15,6 +15,7 @@ My profile page: https://hyperskill.org/profile/77345863
 * Easy Rider Bus Company
 * Rock-Paper-Scissors
 * Simple Banking System
+* Numeric Matrix Processor (work in progress)
 
 ### Easy
 * Loan Calculator
