@@ -16,6 +16,7 @@ My profile page: https://hyperskill.org/profile/77345863
 * Rock-Paper-Scissors
 * Simple Banking System
 * Numeric Matrix Processor
+* Web Scraper (work in progress)
 
 ### Easy
 * Loan Calculator
