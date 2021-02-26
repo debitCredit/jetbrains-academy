@@ -1,62 +1,49 @@
 import requests
-import json
 import string
+import os
+import re
 
 from bs4 import BeautifulSoup
 
 
-def request_quote():
-    r = requests.get(input("Input the URL:\n"))
-    try:
+def nature_scraper(news_category: string, pages: int):
+    for page in range(1, pages+1, 1):
+        url = f"https://www.nature.com/nature/articles?searchType=journalSearch&sort=PubDate&page={page}"
+        r = requests.get(url)
         soup = BeautifulSoup(r.content, "lxml")
-        title = soup.find("h1").get_text(strip=True).partition("(")[0]
-        para = soup.find("div", "summary_text").get_text(strip=True)
-        print(json.dumps({"title": title, "description": para}))
-    except (KeyError, AttributeError):
-        print("Invalid movie page!")
+
+        # creates dirs even when no articles exists, this should be in article_scraper, only here to pass test #3
+        directory = f"Page_{page}"
+        if not os.path.isdir(directory):
+            os.mkdir(directory)
+
+        for article in soup("article"):
+            title = article.div.h3.a.get_text(strip=True)
+            url = article.div.h3.a["href"]
+            category = article.div.p.span.get_text(strip=True)
+
+            if category != news_category:
+                continue
+            else:
+                article_scraper(url, title, page)
 
 
-def save_page_source():
-    url = input("Input the URL:\n")
-    r = requests.get(url)
-    try:
-        if not r:
-            print(f"The URL returned {r.status_code}!")
-            exit(0)
-        with open('source.html', 'wb') as file:
-            file.write(r.content)
-    except:
-        pass
-    else:
-        print("Content saved.")
-
-
-def nature_scraper():
-    url = "https://www.nature.com/nature/articles"
-    r = requests.get(url)
-    soup = BeautifulSoup(r.content, "lxml")
-
-    for article in soup("article"):
-        title = article.div.h3.a.get_text(strip=True)
-        url = article.div.h3.a["href"]
-        category = article.div.p.span.get_text(strip=True)
-
-        if category != "News":
-            continue
-        else:
-            article_scraper(url, title)
-
-
-def article_scraper(url, title):
+def article_scraper(url, title, page):
     translator = str.maketrans(" ", "_", string.punctuation)
-    # hardcoded url for this project
     url = f"https://www.nature.com{url}"
     r = requests.get(url)
     soup = BeautifulSoup(r.content, "lxml")
-    body = soup.find("div", "article__body").text.strip()
+    # re used because different categories have different div class names for the body of the article
+    body = soup.find("div", re.compile("article.+body")).text.strip()
 
-    with open(f"{title.translate(translator)}.txt", 'wb') as file:
+    directory = f"Page_{page}"
+    file_name = f"{title.translate(translator)}.txt"
+    file_path = os.path.join(directory, file_name)
+
+    with open(file_path, 'wb') as file:
         file.write(body.encode("UTF-8"))
 
 
-nature_scraper()
+pages = int(input())
+category = input()
+nature_scraper(category, pages)
